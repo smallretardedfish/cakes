@@ -20,13 +20,13 @@ func CakeHandler(c *gin.Context) {
 
 func run() error {
 	r := gin.Default()
-	r.GET("/cake", CakeHandler)
+	r.GET("/cake\n", CakeHandler)
 	srv := http.Server{
 		Addr:    ":8080",
 		Handler: r,
 	}
 
-	log.Println("starting http server on port :8000")
+	log.Println("starting http server on port :8080")
 	log.Println("app can be interrupted by pressing Ctl+C")
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
