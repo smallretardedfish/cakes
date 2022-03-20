@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/smallretardedfish/cakes/internal/domain"
+	"github.com/smallretardedfish/cakes/pkg/errors"
 	"log"
 	"net/http"
 )
@@ -21,7 +22,6 @@ type UserHandler struct {
 
 func NewUserHandler(service UserService) *UserHandler {
 	h := &UserHandler{UserService: service}
-	h.initRoutes()
 	return h
 }
 
@@ -35,6 +35,10 @@ func (uh *UserHandler) Create(c *gin.Context) {
 	}
 	err = uh.UserService.Create(&inp)
 	if err != nil {
+		if err == errors.ErrUserAlreadyExist {
+			c.Status(http.StatusConflict)
+			return
+		}
 		c.Status(http.StatusInternalServerError)
 		log.Println(err)
 		return
