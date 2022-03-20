@@ -2,29 +2,23 @@ package main
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
+	"github.com/smallretardedfish/cakes/internal/repository"
+	"github.com/smallretardedfish/cakes/internal/server"
+	"github.com/smallretardedfish/cakes/internal/service"
+	"github.com/smallretardedfish/cakes/internal/transport/handler"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"time"
 )
 
-func CakeHandler(c *gin.Context) {
-	if _, err := c.Writer.Write([]byte("cake")); err != nil {
-		log.Println(err)
-		return
-	}
-	c.Status(http.StatusOK)
-}
-
 func run() error {
-	r := gin.Default()
-	r.GET("/cake\n", CakeHandler)
-	srv := http.Server{
-		Addr:    ":8080",
-		Handler: r,
-	}
+
+	repo := repository.NewMemoryStorage()
+	service := service.NewUserService(repo)
+	handler := handler.NewUserHandler(service)
+	r := handler.InitRoutes()
+	srv := server.NewHTTPServer(":8080", r)
 
 	log.Println("starting http server on port :8080")
 	log.Println("app can be interrupted by pressing Ctl+C")
@@ -38,7 +32,7 @@ func run() error {
 			log.Fatalln(err)
 		}
 	}()
-	if err := srv.ListenAndServe(); err != nil {
+	if err := srv.Run(); err != nil {
 		return err
 	}
 	return nil

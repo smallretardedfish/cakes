@@ -1,4 +1,4 @@
-module github.com/cakes
+module github.com/smallretardedfish/cakes
 
 go 1.18
 
