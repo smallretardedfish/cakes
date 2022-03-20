@@ -51,7 +51,7 @@ func (uh *UserHandler) ReadAll(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func (uh *UserHandler) initRoutes() *gin.Engine {
+func (uh *UserHandler) InitRoutes() *gin.Engine {
 	r := gin.Default()
 	r.Group("/user")
 	{

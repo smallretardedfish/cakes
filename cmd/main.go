@@ -17,8 +17,9 @@ func run() error {
 	repo := repository.NewMemoryStorage()
 	service := service.NewUserService(repo)
 	handler := handler.NewUserHandler(service)
-	r := handler.InitRoutes()
-	srv := server.NewHTTPServer(":8080", r)
+	r := handler
+	h := r.InitRoutes()
+	srv := server.NewHTTPServer(":8080", h)
 
 	log.Println("starting http server on port :8080")
 	log.Println("app can be interrupted by pressing Ctl+C")
